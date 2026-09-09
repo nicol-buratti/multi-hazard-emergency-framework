@@ -19,6 +19,14 @@
         "id": "f080f7d563bd7ed5",
         "type": "tab",
         "label": "Camunda",
+        "disabled": true,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "38421258531f58b8",
+        "type": "tab",
+        "label": "Flow 1",
         "disabled": false,
         "info": "",
         "env": []
@@ -864,7 +872,17 @@
         "name": "Trigger and Read place graph",
         "info": "",
         "category": "",
-        "in": [],
+        "in": [
+            {
+                "x": 200,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "dc13fe3224d9a91a"
+                    }
+                ]
+            }
+        ],
         "out": [
             {
                 "x": 620,
@@ -1264,6 +1282,204 @@
         "color": "#DDAA99"
     },
     {
+        "id": "666506f84ee9eb8f",
+        "type": "subflow",
+        "name": "Get View form Place",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "0931847175cee323"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 820,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "7f924d95deabd087",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "1b0fc18ddc882f4d",
+        "type": "subflow",
+        "name": "ASSIGN",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "a31e9dc3bd5fac2e"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 920,
+                "y": 280,
+                "wires": [
+                    {
+                        "id": "4fee3462c6966416",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "bf3016ac4c9d3801",
+        "type": "subflow",
+        "name": "Get View From Destination",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "63d2ae4dd3a9d0b2"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 800,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "58a17cb1adf59a07",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "68beb9b9ce6213fc",
+        "type": "subflow",
+        "name": "Get View from Path",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 100,
+                "y": 100,
+                "wires": [
+                    {
+                        "id": "dee97264fa523a86"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 820,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "9e97695c50f5cac6",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "28a5cee5a9b105c4",
+        "type": "subflow",
+        "name": "MOVEMENT",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "6f3f3c08797fe53d"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 940,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "b05c765b4e0926e7",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "e0717b2846020481",
+        "type": "subflow",
+        "name": "Calculate Path from Destination and Path",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "119f91f583fc4509"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1000,
+                "y": 260,
+                "wires": [
+                    {
+                        "id": "db93bbe5292d0234",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
         "id": "8499b914410e71fe",
         "type": "group",
         "z": "742c3f66713f865c",
@@ -1356,7 +1572,7 @@
             "239288df8fde5231",
             "f9d6f8fefafc4ebb"
         ],
-        "x": 314,
+        "x": 334,
         "y": 1939,
         "w": 532,
         "h": 262
@@ -1588,12 +1804,13 @@
             "e9f82a0cda79707c",
             "8711aabe09e2ebfd",
             "d9a4d0486b82627e",
-            "dd1ed75679f32934"
+            "dd1ed75679f32934",
+            "2ff5774bca4ce0be"
         ],
-        "x": 134,
-        "y": 159,
-        "w": 372,
-        "h": 202
+        "x": 94,
+        "y": 119,
+        "w": 412,
+        "h": 242
     },
     {
         "id": "1053c6913c681fc3",
@@ -1694,12 +1911,314 @@
             "b004d3367cae2b38",
             "1bbab437ca0cb33b",
             "0f62d3742017a7b6",
-            "c61ded82cf4b93c3"
+            "c61ded82cf4b93c3",
+            "13ee06ed7723f36b"
         ],
         "x": 334,
-        "y": 1199,
+        "y": 1159,
         "w": 612,
-        "h": 202
+        "h": 242
+    },
+    {
+        "id": "47d90523c2b43d6d",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "name": "Emergency Evacuation Process Deployment",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "cda1c39732e74d0c",
+            "20f4abdad9ad46eb",
+            "fbdc7f9091859a4a",
+            "64fb42f69e55ba97",
+            "35363b06ce2e1bc9",
+            "b8562236af3d66a1",
+            "ce7e0c9d5af1aad0",
+            "142d2abacf7520df",
+            "734cab20598a12d6",
+            "54a4a3a4c020a0bf"
+        ],
+        "x": 434,
+        "y": 119,
+        "w": 372,
+        "h": 442
+    },
+    {
+        "id": "ae95263cde717d3e",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "772f6715c5060a61",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#767676"
+        },
+        "nodes": [
+            "66b4906f9434d372",
+            "47163d1e1183364f",
+            "c4a8c583f82b547e",
+            "86b89912f005d98b",
+            "f1329785378c2bd6"
+        ],
+        "x": 1194,
+        "y": 1639,
+        "w": 692,
+        "h": 162
+    },
+    {
+        "id": "d0b5da9ceb466b56",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "4f8cf0d833d6f2bb",
+        "name": "Emergency Occupant Process",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "24868e5f12cb2084",
+            "25d3973bc2cac46c",
+            "206cf75eeee1a505",
+            "04b389d7c0262fe4",
+            "7c9d84fed621cd7e",
+            "75a470dcac241a2c",
+            "d75327a5158a06e3",
+            "8b4b2f066704d28e",
+            "3a7d2c869c91a7ac",
+            "c03d768c6a55073e"
+        ],
+        "x": 434,
+        "y": 959,
+        "w": 512,
+        "h": 322
+    },
+    {
+        "id": "0900d017d4a3bcaa",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "04d2ac4169bf04fa",
+        "name": "",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "50d3367aca14af79",
+            "821752909c61cfc5",
+            "2be947f64232dadc",
+            "169c0a7c449d14e8",
+            "a3b434ea28fec976",
+            "44be1aaa8646035b"
+        ],
+        "x": 474,
+        "y": 639,
+        "w": 512,
+        "h": 242
+    },
+    {
+        "id": "17d7aea7bfd12f67",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "04d2ac4169bf04fa",
+        "name": "Building Occupancy Process",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "d406cbd5e4f60dcd",
+            "e7ef61d9cad9e7a4"
+        ],
+        "x": 1074,
+        "y": 679,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "04d2ac4169bf04fa",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "style": {
+            "stroke": "#555555",
+            "stroke-opacity": "1",
+            "fill": "rgba(255, 255, 255, 0.03)",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#f0f0f0"
+        },
+        "nodes": [
+            "0900d017d4a3bcaa",
+            "17d7aea7bfd12f67"
+        ],
+        "x": 448,
+        "y": 613,
+        "w": 1224,
+        "h": 294
+    },
+    {
+        "id": "92724721027ba859",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "4f8cf0d833d6f2bb",
+        "style": {
+            "stroke": "#555555",
+            "stroke-opacity": "1",
+            "fill": "rgba(255, 255, 255, 0.03)",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#f0f0f0"
+        },
+        "nodes": [
+            "67e869606c109548",
+            "ce2a4417f82b2b2c",
+            "c7c7500f611524c2",
+            "3d85092cdcec5fd7",
+            "5fb5ec526aae365f"
+        ],
+        "x": 994,
+        "y": 998.176513671875,
+        "w": 812,
+        "h": 142.823486328125
+    },
+    {
+        "id": "4b4c244d64b7a70a",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "4f8cf0d833d6f2bb",
+        "style": {
+            "stroke": "#555555",
+            "stroke-opacity": "1",
+            "fill": "rgba(255, 255, 255, 0.03)",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#f0f0f0"
+        },
+        "nodes": [
+            "4a58fe21c94c8c2d",
+            "ba432a10139265de",
+            "c56166f28f7aa0b5",
+            "9533b10715d3ede3",
+            "5578df9f2f418ab5"
+        ],
+        "x": 994,
+        "y": 1179,
+        "w": 312,
+        "h": 242
+    },
+    {
+        "id": "4f8cf0d833d6f2bb",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "name": "Occupant Pool",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "d0b5da9ceb466b56",
+            "92724721027ba859",
+            "4b4c244d64b7a70a"
+        ],
+        "x": 408,
+        "y": 933,
+        "w": 1424,
+        "h": 514
+    },
+    {
+        "id": "24fc7be2134447ed",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "772f6715c5060a61",
+        "style": {
+            "stroke": "#555555",
+            "stroke-opacity": "1",
+            "fill": "rgba(255, 255, 255, 0.03)",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#f0f0f0"
+        },
+        "nodes": [
+            "4c758230c94179c6",
+            "1e4736caf9820c2d",
+            "e01029e8a5d7b525",
+            "88e10c7373a1415f",
+            "313c1b2f91b98256",
+            "4f4fe8872e03e704"
+        ],
+        "x": 414,
+        "y": 1679,
+        "w": 692,
+        "h": 222
+    },
+    {
+        "id": "3ea98f21909a2385",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "772f6715c5060a61",
+        "style": {
+            "stroke": "#555555",
+            "stroke-opacity": "1",
+            "fill": "rgba(255, 255, 255, 0.03)",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#f0f0f0"
+        },
+        "nodes": [
+            "247c798d18288a2d",
+            "1d7efd86f1a390c1"
+        ],
+        "x": 1194,
+        "y": 1819,
+        "w": 452,
+        "h": 82
+    },
+    {
+        "id": "5f41ebe96cd701f1",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "g": "772f6715c5060a61",
+        "style": {
+            "stroke": "#555555",
+            "stroke-opacity": "1",
+            "fill": "rgba(255, 255, 255, 0.03)",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#f0f0f0"
+        },
+        "nodes": [
+            "0465dd94a2c2be29",
+            "816384554794588e"
+        ],
+        "x": 1194,
+        "y": 1919,
+        "w": 512,
+        "h": 82
+    },
+    {
+        "id": "772f6715c5060a61",
+        "type": "group",
+        "z": "38421258531f58b8",
+        "name": "Emergency Warden Pool",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "ae95263cde717d3e",
+            "24fc7be2134447ed",
+            "3ea98f21909a2385",
+            "5f41ebe96cd701f1"
+        ],
+        "x": 388,
+        "y": 1613,
+        "w": 1524,
+        "h": 414
     },
     {
         "id": "19268c5a199e4927",
@@ -4319,35 +4838,6 @@
         ]
     },
     {
-        "id": "2ff5774bca4ce0be",
-        "type": "inject",
-        "z": "cfe2febad04ff8c6",
-        "name": "Manual Trigger",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 220,
-        "y": 120,
-        "wires": [
-            [
-                "dc13fe3224d9a91a"
-            ]
-        ]
-    },
-    {
         "id": "dc13fe3224d9a91a",
         "type": "delay",
         "z": "cfe2febad04ff8c6",
@@ -5419,6 +5909,901 @@
         ]
     },
     {
+        "id": "0931847175cee323",
+        "type": "change",
+        "z": "666506f84ee9eb8f",
+        "name": "Get query from view",
+        "rules": [
+            {
+                "t": "set",
+                "p": "viewObject",
+                "pt": "msg",
+                "to": "$globalContext(\"views\")[name in $$.job.variables.Place]",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "queries",
+                "pt": "msg",
+                "to": "$globalContext(\"logicalPlaces\")[id in $$.viewObject.logicalPlaces].query",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "queries",
+                "tot": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "queries",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "viewObject",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 80,
+        "wires": [
+            [
+                "c566addedee23424"
+            ]
+        ]
+    },
+    {
+        "id": "c566addedee23424",
+        "type": "split",
+        "z": "666506f84ee9eb8f",
+        "name": "Split Queries",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "59ee653a41fdd2ce"
+            ]
+        ]
+    },
+    {
+        "id": "59ee653a41fdd2ce",
+        "type": "change",
+        "z": "666506f84ee9eb8f",
+        "name": "Set msg.query",
+        "rules": [
+            {
+                "t": "set",
+                "p": "query",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 80,
+        "wires": [
+            [
+                "5e4f706fad2013cf"
+            ]
+        ]
+    },
+    {
+        "id": "e5061aa84b68b252",
+        "type": "join",
+        "z": "666506f84ee9eb8f",
+        "name": "Join Results",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": true,
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "7f924d95deabd087"
+            ]
+        ]
+    },
+    {
+        "id": "7f924d95deabd087",
+        "type": "change",
+        "z": "666506f84ee9eb8f",
+        "name": "Format Output",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{$env(\"ViewName\"): $$.payload[0]}",
+                "tot": "jsonata"
+            },
+            {
+                "t": "delete",
+                "p": "query",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5e4f706fad2013cf",
+        "type": "subflow:c6172473ac2e1198",
+        "z": "666506f84ee9eb8f",
+        "name": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "e5061aa84b68b252"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "4fee3462c6966416",
+        "type": "change",
+        "z": "1b0fc18ddc882f4d",
+        "name": "Restore Job & Clean Payload",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "params",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "query",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 720,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6397ef4420d7680f",
+        "type": "change",
+        "z": "1b0fc18ddc882f4d",
+        "name": "Prepare UNWIND Query",
+        "rules": [
+            {
+                "t": "set",
+                "p": "params",
+                "pt": "msg",
+                "to": "{\t  \"logicalPlacesIds\": [ $$.payload.p.identity ],\t  \"assignments\": {\t    $$.job.variables.Attribute: $$.job.variables.Value\t  }\t}",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "query",
+                "pt": "msg",
+                "to": "MATCH (p:Place) WHERE id(p) IN $logicalPlacesIds SET p += $assignments RETURN count(p) AS updated_nodes",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 220,
+        "wires": [
+            [
+                "e92d12e2b2f7b482"
+            ]
+        ]
+    },
+    {
+        "id": "e92d12e2b2f7b482",
+        "type": "subflow:c6172473ac2e1198",
+        "z": "1b0fc18ddc882f4d",
+        "name": "",
+        "x": 470,
+        "y": 280,
+        "wires": [
+            [
+                "4fee3462c6966416"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "6c02415f53553abb",
+        "type": "subflow:666506f84ee9eb8f",
+        "z": "1b0fc18ddc882f4d",
+        "name": "",
+        "x": 420,
+        "y": 220,
+        "wires": [
+            [
+                "6397ef4420d7680f"
+            ]
+        ]
+    },
+    {
+        "id": "a31e9dc3bd5fac2e",
+        "type": "switch",
+        "z": "1b0fc18ddc882f4d",
+        "name": "",
+        "property": "job.variables.Place",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "MyPlace",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "35cbc22ccf84a130"
+            ],
+            [
+                "6c02415f53553abb"
+            ]
+        ]
+    },
+    {
+        "id": "35cbc22ccf84a130",
+        "type": "change",
+        "z": "1b0fc18ddc882f4d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "query",
+                "pt": "msg",
+                "to": "MATCH (p:Place {name:$MyPlaceName}) return p",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "params",
+                "pt": "msg",
+                "to": "{\t    \"MyPlaceName\" : $$.job.variables.MyPlace.name\t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "876588a25ced39d0"
+            ]
+        ]
+    },
+    {
+        "id": "876588a25ced39d0",
+        "type": "subflow:c6172473ac2e1198",
+        "z": "1b0fc18ddc882f4d",
+        "name": "",
+        "x": 560,
+        "y": 100,
+        "wires": [
+            [
+                "6397ef4420d7680f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "63d2ae4dd3a9d0b2",
+        "type": "change",
+        "z": "bf3016ac4c9d3801",
+        "name": "Get query from view",
+        "rules": [
+            {
+                "t": "set",
+                "p": "viewObject",
+                "pt": "msg",
+                "to": "$globalContext(\"views\")[name in $$.job.variables.Destination]",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "queries",
+                "pt": "msg",
+                "to": "$globalContext(\"logicalPlaces\")[id in $$.viewObject.logicalPlaces].query",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "queries",
+                "tot": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "queries",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "viewObject",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 80,
+        "wires": [
+            [
+                "33906c2e7053846d"
+            ]
+        ]
+    },
+    {
+        "id": "33906c2e7053846d",
+        "type": "split",
+        "z": "bf3016ac4c9d3801",
+        "name": "Split Queries",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "3d1042e05aa408bf"
+            ]
+        ]
+    },
+    {
+        "id": "3d1042e05aa408bf",
+        "type": "change",
+        "z": "bf3016ac4c9d3801",
+        "name": "Set msg.query",
+        "rules": [
+            {
+                "t": "set",
+                "p": "query",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 80,
+        "wires": [
+            [
+                "a2e477a1cf1cdb8e"
+            ]
+        ]
+    },
+    {
+        "id": "2f599688d1351ac0",
+        "type": "join",
+        "z": "bf3016ac4c9d3801",
+        "name": "Join Results",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": true,
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "58a17cb1adf59a07"
+            ]
+        ]
+    },
+    {
+        "id": "58a17cb1adf59a07",
+        "type": "change",
+        "z": "bf3016ac4c9d3801",
+        "name": "Format Output",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$$.payload[0]",
+                "tot": "jsonata"
+            },
+            {
+                "t": "delete",
+                "p": "query",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a2e477a1cf1cdb8e",
+        "type": "subflow:c6172473ac2e1198",
+        "z": "bf3016ac4c9d3801",
+        "name": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "2f599688d1351ac0"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "dee97264fa523a86",
+        "type": "change",
+        "z": "68beb9b9ce6213fc",
+        "name": "Get query from view",
+        "rules": [
+            {
+                "t": "set",
+                "p": "viewObject",
+                "pt": "msg",
+                "to": "$globalContext(\"views\")[name in $$.job.variables.Path]",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "queries",
+                "pt": "msg",
+                "to": "$globalContext(\"logicalPlaces\")[id in $$.viewObject.logicalPlaces].query",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "queries",
+                "tot": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "queries",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "viewObject",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 80,
+        "wires": [
+            [
+                "ce0b677aaff534d6"
+            ]
+        ]
+    },
+    {
+        "id": "ce0b677aaff534d6",
+        "type": "split",
+        "z": "68beb9b9ce6213fc",
+        "name": "Split Queries",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "dd0f9b23685d2690"
+            ]
+        ]
+    },
+    {
+        "id": "dd0f9b23685d2690",
+        "type": "change",
+        "z": "68beb9b9ce6213fc",
+        "name": "Set msg.query",
+        "rules": [
+            {
+                "t": "set",
+                "p": "query",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 80,
+        "wires": [
+            [
+                "2329d83898861a72"
+            ]
+        ]
+    },
+    {
+        "id": "278c96f330c149fe",
+        "type": "join",
+        "z": "68beb9b9ce6213fc",
+        "name": "Join Results",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": true,
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "9e97695c50f5cac6"
+            ]
+        ]
+    },
+    {
+        "id": "9e97695c50f5cac6",
+        "type": "change",
+        "z": "68beb9b9ce6213fc",
+        "name": "Format Output",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$$.payload[0]",
+                "tot": "jsonata"
+            },
+            {
+                "t": "delete",
+                "p": "query",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2329d83898861a72",
+        "type": "subflow:c6172473ac2e1198",
+        "z": "68beb9b9ce6213fc",
+        "name": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "278c96f330c149fe"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "b05c765b4e0926e7",
+        "type": "change",
+        "z": "28a5cee5a9b105c4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "job.variables.MyPlace.name",
+                "pt": "msg",
+                "to": "payload[0].target_id.properties.name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f3f3c08797fe53d",
+        "type": "subflow:e0717b2846020481",
+        "z": "28a5cee5a9b105c4",
+        "name": "",
+        "x": 300,
+        "y": 40,
+        "wires": [
+            [
+                "b05c765b4e0926e7"
+            ]
+        ]
+    },
+    {
+        "id": "db93bbe5292d0234",
+        "type": "change",
+        "z": "e0717b2846020481",
+        "name": "Format Route Output",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "traverseIds",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "targetIds",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "query",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "params",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "796766330d3694b2",
+        "type": "change",
+        "z": "e0717b2846020481",
+        "name": "Prepare Query & DB Params",
+        "rules": [
+            {
+                "t": "set",
+                "p": "query",
+                "pt": "msg",
+                "to": "MATCH (source) WHERE source.name = $start_name MATCH path = (source)-[*BFS (e, v | id(v) IN $allowed_ids or id(v) IN $target_ids)]->(target) WHERE id(target) IN $target_ids RETURN target AS target_id, path;",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "params",
+                "pt": "msg",
+                "to": "{\t    \"start_name\": $$.job.variables.MyPlace.name,\t    \"allowed_ids\": [$$.traverseIds],\t    \"target_ids\": [$$.targetIds]\t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 260,
+        "wires": [
+            [
+                "aecb19ad0139ad4a"
+            ]
+        ]
+    },
+    {
+        "id": "bf75f656a8c37b7b",
+        "type": "change",
+        "z": "e0717b2846020481",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "traverseIds",
+                "pt": "msg",
+                "to": "[payload.p.identity]",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 80,
+        "wires": [
+            [
+                "a6df9af5ab6d0585"
+            ]
+        ]
+    },
+    {
+        "id": "d35f2bc9b279f1d1",
+        "type": "change",
+        "z": "e0717b2846020481",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "targetIds",
+                "pt": "msg",
+                "to": "[$$.payload.p.identity]",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "796766330d3694b2"
+            ]
+        ]
+    },
+    {
+        "id": "5c467fef0030c42f",
+        "type": "comment",
+        "z": "e0717b2846020481",
+        "name": "sto usando BFS per ora",
+        "info": "",
+        "x": 320,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "aecb19ad0139ad4a",
+        "type": "subflow:3830ac3a9c9ecd5b",
+        "z": "e0717b2846020481",
+        "name": "",
+        "x": 590,
+        "y": 260,
+        "wires": [
+            [
+                "db93bbe5292d0234"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a6df9af5ab6d0585",
+        "type": "subflow:bf3016ac4c9d3801",
+        "z": "e0717b2846020481",
+        "name": "",
+        "x": 240,
+        "y": 160,
+        "wires": [
+            [
+                "d35f2bc9b279f1d1"
+            ]
+        ]
+    },
+    {
+        "id": "119f91f583fc4509",
+        "type": "subflow:68beb9b9ce6213fc",
+        "z": "e0717b2846020481",
+        "name": "",
+        "x": 210,
+        "y": 80,
+        "wires": [
+            [
+                "bf75f656a8c37b7b"
+            ]
+        ]
+    },
+    {
         "id": "e9f82a0cda79707c",
         "type": "change",
         "z": "61370204cb540a30",
@@ -5509,6 +6894,36 @@
         "wires": [
             [
                 "e9f82a0cda79707c"
+            ]
+        ]
+    },
+    {
+        "id": "2ff5774bca4ce0be",
+        "type": "inject",
+        "z": "61370204cb540a30",
+        "g": "4907d7deac7717b4",
+        "name": "Manual Trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 160,
+        "wires": [
+            [
+                "dd1ed75679f32934"
             ]
         ]
     },
@@ -6811,7 +8226,7 @@
                 "type": "str"
             }
         ],
-        "x": 460,
+        "x": 480,
         "y": 1980,
         "wires": [
             [
@@ -6837,7 +8252,7 @@
                 "type": "str"
             }
         ],
-        "x": 420,
+        "x": 440,
         "y": 2060,
         "wires": [
             [
@@ -6865,7 +8280,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 430,
+        "x": 450,
         "y": 2020,
         "wires": [
             [
@@ -6892,7 +8307,7 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 390,
+        "x": 410,
         "y": 2100,
         "wires": [
             [
@@ -6944,7 +8359,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 580,
+        "x": 600,
         "y": 2100,
         "wires": [
             [
@@ -6959,7 +8374,7 @@
         "g": "79f178997defc9f3",
         "name": "",
         "camunda": "cc7538c088cd1d8b",
-        "x": 750,
+        "x": 770,
         "y": 2100,
         "wires": [
             []
@@ -7410,7 +8825,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 490,
+        "x": 510,
         "y": 2160,
         "wires": [
             [
@@ -7785,6 +9200,7 @@
         "y": 1240,
         "wires": [
             [
+                "13ee06ed7723f36b",
                 "0f62d3742017a7b6"
             ]
         ]
@@ -8093,6 +9509,1237 @@
         "wires": [
             [
                 "c4b9da2d450f73bc"
+            ]
+        ]
+    },
+    {
+        "id": "13ee06ed7723f36b",
+        "type": "debug",
+        "z": "f080f7d563bd7ed5",
+        "g": "ee4e8865308b5702",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "cda1c39732e74d0c",
+        "type": "deploy",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Deploy Emergency Process BPMN",
+        "camunda": "cc7538c088cd1d8b",
+        "x": 640,
+        "y": 280,
+        "wires": [
+            [
+                "ce7e0c9d5af1aad0"
+            ]
+        ]
+    },
+    {
+        "id": "20f4abdad9ad46eb",
+        "type": "file in",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Read Emergency BPMN Diagram",
+        "filename": "/data/camunda/diagram_emergency.bpmn",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 640,
+        "y": 200,
+        "wires": [
+            [
+                "64fb42f69e55ba97"
+            ]
+        ]
+    },
+    {
+        "id": "fbdc7f9091859a4a",
+        "type": "inject",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Trigger Deployment",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 570,
+        "y": 160,
+        "wires": [
+            [
+                "20f4abdad9ad46eb"
+            ]
+        ]
+    },
+    {
+        "id": "64fb42f69e55ba97",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Prepare Deployment Payload",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.definition",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.resourceName",
+                "pt": "msg",
+                "to": "filename",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 240,
+        "wires": [
+            [
+                "cda1c39732e74d0c"
+            ]
+        ]
+    },
+    {
+        "id": "35363b06ce2e1bc9",
+        "type": "process-instance",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Start Emergency Process Instance",
+        "camunda": "cc7538c088cd1d8b",
+        "x": 640,
+        "y": 360,
+        "wires": [
+            [
+                "734cab20598a12d6"
+            ]
+        ]
+    },
+    {
+        "id": "b8562236af3d66a1",
+        "type": "debug",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Debug Process Variables",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "ce7e0c9d5af1aad0",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Extract Process ID",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.processId",
+                "pt": "msg",
+                "to": "payload.deployments[process.bpmnProcessId = \"Process_SecSys\"].process",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 590,
+        "y": 320,
+        "wires": [
+            [
+                "35363b06ce2e1bc9"
+            ]
+        ]
+    },
+    {
+        "id": "142d2abacf7520df",
+        "type": "set-variables",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Set Initial Variables",
+        "camunda": "cc7538c088cd1d8b",
+        "x": 590,
+        "y": 440,
+        "wires": [
+            [
+                "54a4a3a4c020a0bf"
+            ]
+        ]
+    },
+    {
+        "id": "734cab20598a12d6",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Initialize Process Variables",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.variables",
+                "pt": "msg",
+                "to": "{}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 400,
+        "wires": [
+            [
+                "142d2abacf7520df"
+            ]
+        ]
+    },
+    {
+        "id": "54a4a3a4c020a0bf",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "47d90523c2b43d6d",
+        "name": "Set Flow State Variables",
+        "rules": [
+            {
+                "t": "set",
+                "p": "processData",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "wardenStarted",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            },
+            {
+                "t": "set",
+                "p": "occupantStarted",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            },
+            {
+                "t": "set",
+                "p": "secSysStarted",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 480,
+        "wires": [
+            [
+                "b8562236af3d66a1"
+            ]
+        ]
+    },
+    {
+        "id": "66b4906f9434d372",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "ae95263cde717d3e",
+        "name": "Wrapper: move-signalled-area",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "move-signalled-area",
+                "type": "str"
+            }
+        ],
+        "x": 1350,
+        "y": 1680,
+        "wires": [
+            [
+                "c4a8c583f82b547e"
+            ]
+        ]
+    },
+    {
+        "id": "47163d1e1183364f",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "ae95263cde717d3e",
+        "name": "Wrapper: move-gathering-point",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "move-gathering-point",
+                "type": "str"
+            }
+        ],
+        "x": 1350,
+        "y": 1760,
+        "wires": [
+            [
+                "86b89912f005d98b"
+            ]
+        ]
+    },
+    {
+        "id": "67e869606c109548",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "92724721027ba859",
+        "name": "Wrapper: occupant-get-out",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "occupant-get-out",
+                "type": "str"
+            }
+        ],
+        "x": 1140,
+        "y": 1040,
+        "wires": [
+            [
+                "ce2a4417f82b2b2c"
+            ]
+        ]
+    },
+    {
+        "id": "ce2a4417f82b2b2c",
+        "type": "subflow:28a5cee5a9b105c4",
+        "z": "38421258531f58b8",
+        "g": "92724721027ba859",
+        "name": "",
+        "x": 1371.8556518554688,
+        "y": 1039.176513671875,
+        "wires": [
+            [
+                "c7c7500f611524c2"
+            ]
+        ]
+    },
+    {
+        "id": "c7c7500f611524c2",
+        "type": "switch",
+        "z": "38421258531f58b8",
+        "g": "92724721027ba859",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "empty"
+            },
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1531.8556518554688,
+        "y": 1039.176513671875,
+        "wires": [
+            [
+                "3d85092cdcec5fd7"
+            ],
+            [
+                "67e869606c109548"
+            ]
+        ]
+    },
+    {
+        "id": "3d85092cdcec5fd7",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "92724721027ba859",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.jobKey",
+                "pt": "msg",
+                "to": "job.key",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.variables",
+                "pt": "msg",
+                "to": "job.variables",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.errorCode",
+                "pt": "msg",
+                "to": "no-way-found",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload.errorMessage",
+                "pt": "msg",
+                "to": "No way found",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1700,
+        "y": 1040,
+        "wires": [
+            [
+                "5fb5ec526aae365f"
+            ]
+        ]
+    },
+    {
+        "id": "5fb5ec526aae365f",
+        "type": "throw-error",
+        "z": "38421258531f58b8",
+        "g": "92724721027ba859",
+        "name": "",
+        "camunda": "cc7538c088cd1d8b",
+        "x": 1690,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24868e5f12cb2084",
+        "type": "mqtt in",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "Receive Emergency Data",
+        "topic": "emergency/agent/data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "19268c5a199e4927",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 590,
+        "y": 1080,
+        "wires": [
+            [
+                "25d3973bc2cac46c"
+            ]
+        ]
+    },
+    {
+        "id": "25d3973bc2cac46c",
+        "type": "delay",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 540,
+        "y": 1120,
+        "wires": [
+            [
+                "c03d768c6a55073e"
+            ]
+        ]
+    },
+    {
+        "id": "206cf75eeee1a505",
+        "type": "subflow:e8aef35ab083c2f1",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "",
+        "x": 590,
+        "y": 1040,
+        "wires": [
+            [
+                "25d3973bc2cac46c"
+            ]
+        ]
+    },
+    {
+        "id": "04b389d7c0262fe4",
+        "type": "inject",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 540,
+        "y": 1000,
+        "wires": [
+            [
+                "206cf75eeee1a505"
+            ]
+        ]
+    },
+    {
+        "id": "7c9d84fed621cd7e",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "Format Message",
+        "rules": [
+            {
+                "t": "set",
+                "p": "DangerZones.count",
+                "pt": "msg",
+                "to": "payload.DangerZones.count",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "processData",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "payload.variables.DangerZones.count",
+                "pt": "msg",
+                "to": "DangerZones.count",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 1160,
+        "wires": [
+            [
+                "75a470dcac241a2c"
+            ]
+        ]
+    },
+    {
+        "id": "75a470dcac241a2c",
+        "type": "set-variables",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "Set Process Variables",
+        "camunda": "cc7538c088cd1d8b",
+        "x": 820,
+        "y": 1160,
+        "wires": [
+            [
+                "d75327a5158a06e3"
+            ]
+        ]
+    },
+    {
+        "id": "d75327a5158a06e3",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "Filter Payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\t    \"tenantId\": $$.payload.deployments[process.bpmnProcessId = \"Process_Occupant\"].process.tenantId,\t    \"processDefinitionKey\": $$.payload.deployments[process.bpmnProcessId = \"Process_Occupant\"].process.processDefinitionKey,\t    \"variables\": $$.payload.variables\t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 1200,
+        "wires": [
+            [
+                "3a7d2c869c91a7ac"
+            ]
+        ]
+    },
+    {
+        "id": "8b4b2f066704d28e",
+        "type": "subflow:df8d344bd7233279",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "",
+        "x": 600,
+        "y": 1240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3a7d2c869c91a7ac",
+        "type": "function",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "assign MyPlace to occupant",
+        "func": "// 1. Ensure 'variables' exists\nif (!msg.payload.variables) {\n    msg.payload.variables = {};\n}\n\n// 2. Ensure 'MyPlace' exists inside 'variables'\nif (!msg.payload.variables.MyPlace) {\n    msg.payload.variables.MyPlace = {};\n}\n\n// 3. Now it is safe to assign 'name'\nmsg.payload.variables.MyPlace.name = \"StanzaCulmone\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 1200,
+        "wires": [
+            [
+                "8b4b2f066704d28e"
+            ]
+        ]
+    },
+    {
+        "id": "c03d768c6a55073e",
+        "type": "subflow:8717f82059831d90",
+        "z": "38421258531f58b8",
+        "g": "d0b5da9ceb466b56",
+        "name": "",
+        "env": [
+            {
+                "name": "ViewName",
+                "value": "DangerZones",
+                "type": "str"
+            },
+            {
+                "name": "Attribute",
+                "value": "count",
+                "type": "str"
+            }
+        ],
+        "x": 710,
+        "y": 1120,
+        "wires": [
+            [
+                "7c9d84fed621cd7e"
+            ]
+        ]
+    },
+    {
+        "id": "61cc539f135c1a57",
+        "type": "inject",
+        "z": "38421258531f58b8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 1100,
+        "wires": [
+            [
+                "c03d768c6a55073e"
+            ]
+        ]
+    },
+    {
+        "id": "50d3367aca14af79",
+        "type": "subflow:07314571c78da6c0",
+        "z": "38421258531f58b8",
+        "g": "0900d017d4a3bcaa",
+        "name": "Camunda: Shut Off Emergency Lights",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "shut-off-emergency-lights",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 840,
+        "wires": [
+            [
+                "a3b434ea28fec976"
+            ]
+        ]
+    },
+    {
+        "id": "821752909c61cfc5",
+        "type": "subflow:07314571c78da6c0",
+        "z": "38421258531f58b8",
+        "g": "0900d017d4a3bcaa",
+        "name": "Camunda: Adjust Safe Path Lights",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "adjust-safe-path-lights",
+                "type": "str"
+            }
+        ],
+        "x": 640,
+        "y": 680,
+        "wires": [
+            [
+                "2be947f64232dadc"
+            ]
+        ]
+    },
+    {
+        "id": "2be947f64232dadc",
+        "type": "subflow:1b0fc18ddc882f4d",
+        "z": "38421258531f58b8",
+        "g": "0900d017d4a3bcaa",
+        "name": "",
+        "x": 880,
+        "y": 680,
+        "wires": [
+            [
+                "821752909c61cfc5"
+            ]
+        ]
+    },
+    {
+        "id": "169c0a7c449d14e8",
+        "type": "subflow:07314571c78da6c0",
+        "z": "38421258531f58b8",
+        "g": "0900d017d4a3bcaa",
+        "name": "Camunda: Adjust Danger Path Lights",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "adjust-danger-path-lights",
+                "type": "str"
+            }
+        ],
+        "x": 650,
+        "y": 760,
+        "wires": [
+            [
+                "44be1aaa8646035b"
+            ]
+        ]
+    },
+    {
+        "id": "a3b434ea28fec976",
+        "type": "subflow:1b0fc18ddc882f4d",
+        "z": "38421258531f58b8",
+        "g": "0900d017d4a3bcaa",
+        "name": "",
+        "x": 900,
+        "y": 840,
+        "wires": [
+            [
+                "50d3367aca14af79"
+            ]
+        ]
+    },
+    {
+        "id": "d406cbd5e4f60dcd",
+        "type": "subflow:66cb7b7ad11fbb9f",
+        "z": "38421258531f58b8",
+        "g": "17d7aea7bfd12f67",
+        "name": "Get Building Occupancy Task Wrapper",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "get-building-occupancy",
+                "type": "str"
+            }
+        ],
+        "x": 1250,
+        "y": 720,
+        "wires": [
+            [
+                "e7ef61d9cad9e7a4"
+            ]
+        ]
+    },
+    {
+        "id": "e7ef61d9cad9e7a4",
+        "type": "subflow:8717f82059831d90",
+        "z": "38421258531f58b8",
+        "g": "17d7aea7bfd12f67",
+        "name": "",
+        "env": [
+            {
+                "name": "ViewName",
+                "value": "Building",
+                "type": "str"
+            },
+            {
+                "name": "Attribute",
+                "value": "occupancy",
+                "type": "str"
+            }
+        ],
+        "x": 1530,
+        "y": 720,
+        "wires": [
+            [
+                "d406cbd5e4f60dcd"
+            ]
+        ]
+    },
+    {
+        "id": "4a58fe21c94c8c2d",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "4b4c244d64b7a70a",
+        "name": "Wrapper: signal-area",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "signal-area",
+                "type": "str"
+            }
+        ],
+        "x": 1120,
+        "y": 1220,
+        "wires": [
+            [
+                "ba432a10139265de"
+            ]
+        ]
+    },
+    {
+        "id": "ba432a10139265de",
+        "type": "subflow:1b0fc18ddc882f4d",
+        "z": "38421258531f58b8",
+        "g": "4b4c244d64b7a70a",
+        "name": "",
+        "x": 1100,
+        "y": 1260,
+        "wires": [
+            [
+                "c56166f28f7aa0b5"
+            ]
+        ]
+    },
+    {
+        "id": "c56166f28f7aa0b5",
+        "type": "subflow:8717f82059831d90",
+        "z": "38421258531f58b8",
+        "g": "4b4c244d64b7a70a",
+        "name": "",
+        "env": [
+            {
+                "name": "ViewName",
+                "value": "SignalledAreas",
+                "type": "str"
+            },
+            {
+                "name": "Attribute",
+                "value": "count",
+                "type": "str"
+            }
+        ],
+        "x": 1130,
+        "y": 1300,
+        "wires": [
+            [
+                "9533b10715d3ede3"
+            ]
+        ]
+    },
+    {
+        "id": "9533b10715d3ede3",
+        "type": "function",
+        "z": "38421258531f58b8",
+        "g": "4b4c244d64b7a70a",
+        "name": "Warden in random exit",
+        "func": "let names = [\"E1\", \"E2\", \"E3\", \"E4\", \"E5\", \"E6\", \"E7\"];\n\nlet processData = flow.get(\"processData\") || {};\nlet deployments = processData.deployments || [];\n\nlet wardenDeployment = deployments.find(d => d.process && d.process.bpmnProcessId === \"Process_Emergency_Warden\");\n\nmsg.payload = msg.payload || {};\n\nif (wardenDeployment) {\n    msg.payload.tenantId = wardenDeployment.process.tenantId;\n    msg.payload.processDefinitionKey = wardenDeployment.process.processDefinitionKey;\n}\n\nlet originalVars = processData.variables || (msg.job && msg.job.variables) || msg.payload.variables || {};\n\nlet newVariables = {\n    SignalledAreas: originalVars.SignalledAreas || {},\n    MyPlace: originalVars.MyPlace || {}\n};\n\nnewVariables.MyPlace.name = names[Math.floor(Math.random() * names.length)];\nnewVariables.WardenID = 1234;\nnewVariables.SignalledAreas.count = msg.job.variables.SignalledAreas.count;\n\ndelete msg.payload.SignalledAreas\nmsg.payload.variables = newVariables;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 1340,
+        "wires": [
+            [
+                "5578df9f2f418ab5"
+            ]
+        ]
+    },
+    {
+        "id": "5578df9f2f418ab5",
+        "type": "subflow:df8d344bd7233279",
+        "z": "38421258531f58b8",
+        "g": "4b4c244d64b7a70a",
+        "name": "",
+        "x": 1160,
+        "y": 1380,
+        "wires": [
+            [
+                "4a58fe21c94c8c2d"
+            ]
+        ]
+    },
+    {
+        "id": "4c758230c94179c6",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "24fc7be2134447ed",
+        "name": "Wrapper: rescue-occupant",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "rescue-occupant",
+                "type": "str"
+            }
+        ],
+        "x": 580,
+        "y": 1780,
+        "wires": [
+            [
+                "1e4736caf9820c2d"
+            ]
+        ]
+    },
+    {
+        "id": "1e4736caf9820c2d",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "24fc7be2134447ed",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.name",
+                "pt": "msg",
+                "to": "WardenArrived",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload.correlationKey",
+                "pt": "msg",
+                "to": "job.variables.correlationKey",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.variables",
+                "pt": "msg",
+                "to": "job.variables",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 1780,
+        "wires": [
+            [
+                "e01029e8a5d7b525",
+                "4c758230c94179c6"
+            ]
+        ]
+    },
+    {
+        "id": "e01029e8a5d7b525",
+        "type": "message",
+        "z": "38421258531f58b8",
+        "g": "24fc7be2134447ed",
+        "name": "",
+        "camunda": "cc7538c088cd1d8b",
+        "x": 1020,
+        "y": 1820,
+        "wires": []
+    },
+    {
+        "id": "88e10c7373a1415f",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "24fc7be2134447ed",
+        "name": "Wrapper: leave-occupant",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "leave-occupant",
+                "type": "str"
+            }
+        ],
+        "x": 570,
+        "y": 1860,
+        "wires": [
+            [
+                "313c1b2f91b98256"
+            ]
+        ]
+    },
+    {
+        "id": "313c1b2f91b98256",
+        "type": "change",
+        "z": "38421258531f58b8",
+        "g": "24fc7be2134447ed",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.name",
+                "pt": "msg",
+                "to": "RescueCompleted",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload.correlationKey",
+                "pt": "msg",
+                "to": "job.variables.correlationKey",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.variables",
+                "pt": "msg",
+                "to": "job.variables",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 1860,
+        "wires": [
+            [
+                "88e10c7373a1415f",
+                "e01029e8a5d7b525"
+            ]
+        ]
+    },
+    {
+        "id": "4f4fe8872e03e704",
+        "type": "comment",
+        "z": "38421258531f58b8",
+        "g": "24fc7be2134447ed",
+        "name": "Messages Occupant-Warden",
+        "info": "",
+        "x": 560,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "247c798d18288a2d",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "3ea98f21909a2385",
+        "name": "Wrapper: disable-signal-area",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "disable-signal-area",
+                "type": "str"
+            }
+        ],
+        "x": 1340,
+        "y": 1860,
+        "wires": [
+            [
+                "1d7efd86f1a390c1"
+            ]
+        ]
+    },
+    {
+        "id": "1d7efd86f1a390c1",
+        "type": "subflow:1b0fc18ddc882f4d",
+        "z": "38421258531f58b8",
+        "g": "3ea98f21909a2385",
+        "name": "",
+        "x": 1560,
+        "y": 1860,
+        "wires": [
+            [
+                "247c798d18288a2d"
+            ]
+        ]
+    },
+    {
+        "id": "44be1aaa8646035b",
+        "type": "subflow:1b0fc18ddc882f4d",
+        "z": "38421258531f58b8",
+        "g": "0900d017d4a3bcaa",
+        "name": "",
+        "x": 900,
+        "y": 760,
+        "wires": [
+            [
+                "169c0a7c449d14e8"
+            ]
+        ]
+    },
+    {
+        "id": "c4a8c583f82b547e",
+        "type": "subflow:28a5cee5a9b105c4",
+        "z": "38421258531f58b8",
+        "g": "ae95263cde717d3e",
+        "name": "",
+        "x": 1610,
+        "y": 1680,
+        "wires": [
+            [
+                "66b4906f9434d372",
+                "f1329785378c2bd6"
+            ]
+        ]
+    },
+    {
+        "id": "86b89912f005d98b",
+        "type": "subflow:28a5cee5a9b105c4",
+        "z": "38421258531f58b8",
+        "g": "ae95263cde717d3e",
+        "name": "",
+        "x": 1590,
+        "y": 1760,
+        "wires": [
+            [
+                "47163d1e1183364f"
+            ]
+        ]
+    },
+    {
+        "id": "f1329785378c2bd6",
+        "type": "debug",
+        "z": "38421258531f58b8",
+        "g": "ae95263cde717d3e",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1780,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "0465dd94a2c2be29",
+        "type": "subflow:5122c220d975922b",
+        "z": "38421258531f58b8",
+        "g": "5f41ebe96cd701f1",
+        "name": "Wrapper: get-signalled-areas",
+        "env": [
+            {
+                "name": "TASK_TYPE",
+                "value": "get-signalled-areas",
+                "type": "str"
+            }
+        ],
+        "x": 1340,
+        "y": 1960,
+        "wires": [
+            [
+                "816384554794588e"
+            ]
+        ]
+    },
+    {
+        "id": "816384554794588e",
+        "type": "subflow:8717f82059831d90",
+        "z": "38421258531f58b8",
+        "g": "5f41ebe96cd701f1",
+        "name": "",
+        "env": [
+            {
+                "name": "ViewName",
+                "value": "SignalledAreas",
+                "type": "str"
+            },
+            {
+                "name": "Attribute",
+                "value": "count",
+                "type": "str"
+            }
+        ],
+        "x": 1590,
+        "y": 1960,
+        "wires": [
+            [
+                "0465dd94a2c2be29"
             ]
         ]
     }
