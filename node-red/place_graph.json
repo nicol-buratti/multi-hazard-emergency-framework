@@ -772,6 +772,17 @@
         },
         {
             "id": "view4",
+            "name": "FullBuilding",
+            "logicalPlaces": [
+                "set3",
+                "set4"
+            ],
+            "attributes": {
+                "occupancy": "SUM"
+            }
+        },
+        {
+            "id": "view5",
             "name": "GatheringPoints",
             "logicalPlaces": [
                 "set4"
@@ -779,7 +790,7 @@
             "attributes": {}
         },
         {
-            "id": "view5",
+            "id": "view6",
             "name": "SignalledAreas",
             "logicalPlaces": [
                 "set5"

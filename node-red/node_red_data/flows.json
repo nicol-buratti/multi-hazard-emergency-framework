@@ -2213,7 +2213,8 @@
             "ae95263cde717d3e",
             "24fc7be2134447ed",
             "3ea98f21909a2385",
-            "5f41ebe96cd701f1"
+            "5f41ebe96cd701f1",
+            "c09b72cc5c1d73f0"
         ],
         "x": 388,
         "y": 1613,
@@ -3295,14 +3296,14 @@
         "type": "file in",
         "z": "4644f4b8459c8ede",
         "name": "",
-        "filename": "/data/host_files/json_fake_data/iot_data.json",
+        "filename": "/data/host_files/json_fake_data/iot_data_test.json",
         "filenameType": "str",
         "format": "utf8",
         "chunk": false,
         "sendError": false,
         "encoding": "none",
         "allProps": false,
-        "x": 450,
+        "x": 470,
         "y": 260,
         "wires": [
             [
@@ -3354,7 +3355,7 @@
         "pauseType": "rate",
         "timeout": "5",
         "timeoutUnits": "seconds",
-        "rate": "1",
+        "rate": "10",
         "nbRateUnits": "5",
         "rateUnits": "second",
         "randomFirst": "1",
@@ -4616,7 +4617,7 @@
         "pauseType": "rate",
         "timeout": "5",
         "timeoutUnits": "seconds",
-        "rate": "1",
+        "rate": "10",
         "nbRateUnits": "5",
         "rateUnits": "second",
         "randomFirst": "1",
@@ -4672,7 +4673,7 @@
         "type": "file in",
         "z": "ed46c7591fcf911b",
         "name": "Read Agent Data File",
-        "filename": "/data/host_files/json_fake_data/agent_data.json",
+        "filename": "/data/host_files/json_fake_data/agent_data_test.json",
         "filenameType": "str",
         "format": "utf8",
         "chunk": false,
@@ -6623,9 +6624,27 @@
         "y": 40,
         "wires": [
             [
-                "b05c765b4e0926e7"
+                "b05c765b4e0926e7",
+                "3adceef3864facee"
             ]
         ]
+    },
+    {
+        "id": "3adceef3864facee",
+        "type": "debug",
+        "z": "28a5cee5a9b105c4",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 120,
+        "wires": []
     },
     {
         "id": "db93bbe5292d0234",
@@ -6675,7 +6694,7 @@
                 "t": "set",
                 "p": "query",
                 "pt": "msg",
-                "to": "MATCH (source) WHERE source.name = $start_name MATCH path = (source)-[*BFS (e, v | id(v) IN $allowed_ids or id(v) IN $target_ids)]->(target) WHERE id(target) IN $target_ids RETURN target AS target_id, path;",
+                "to": "MATCH (source:Place)  WHERE source.name = $start_name  AND id(source) in $allowed_ids MATCH path = (source)-[edges *WSHORTEST (e, v |      CASE          WHEN id(v) IN $allowed_ids OR id(v) IN $target_ids THEN v.weight          ELSE 999999999      END ) total_weight]->(target:Place)  WHERE id(target) IN $target_ids  RETURN target AS target_id, path, total_weight;",
                 "tot": "str"
             },
             {
@@ -6695,7 +6714,8 @@
         "y": 260,
         "wires": [
             [
-                "aecb19ad0139ad4a"
+                "aecb19ad0139ad4a",
+                "b08dad9f12ed4db9"
             ]
         ]
     },
@@ -6754,16 +6774,6 @@
         ]
     },
     {
-        "id": "5c467fef0030c42f",
-        "type": "comment",
-        "z": "e0717b2846020481",
-        "name": "sto usando BFS per ora",
-        "info": "",
-        "x": 320,
-        "y": 320,
-        "wires": []
-    },
-    {
         "id": "aecb19ad0139ad4a",
         "type": "subflow:3830ac3a9c9ecd5b",
         "z": "e0717b2846020481",
@@ -6802,6 +6812,23 @@
                 "bf75f656a8c37b7b"
             ]
         ]
+    },
+    {
+        "id": "b08dad9f12ed4db9",
+        "type": "debug",
+        "z": "e0717b2846020481",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 320,
+        "wires": []
     },
     {
         "id": "e9f82a0cda79707c",
@@ -10146,7 +10173,7 @@
         "z": "38421258531f58b8",
         "g": "d0b5da9ceb466b56",
         "name": "assign MyPlace to occupant",
-        "func": "// 1. Ensure 'variables' exists\nif (!msg.payload.variables) {\n    msg.payload.variables = {};\n}\n\n// 2. Ensure 'MyPlace' exists inside 'variables'\nif (!msg.payload.variables.MyPlace) {\n    msg.payload.variables.MyPlace = {};\n}\n\n// 3. Now it is safe to assign 'name'\nmsg.payload.variables.MyPlace.name = \"StanzaCulmone\";\n\nreturn msg;",
+        "func": "// 1. Ensure 'variables' exists\nif (!msg.payload.variables) {\n    msg.payload.variables = {};\n}\n\n// 2. Ensure 'MyPlace' exists inside 'variables'\nif (!msg.payload.variables.MyPlace) {\n    msg.payload.variables.MyPlace = {};\n}\n\n// 3. Now it is safe to assign 'name'\nmsg.payload.variables.MyPlace.name = \"AB2\";\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -10264,7 +10291,7 @@
         "z": "38421258531f58b8",
         "g": "0900d017d4a3bcaa",
         "name": "",
-        "x": 880,
+        "x": 900,
         "y": 680,
         "wires": [
             [
@@ -10631,7 +10658,8 @@
         "y": 1860,
         "wires": [
             [
-                "247c798d18288a2d"
+                "247c798d18288a2d",
+                "c09b72cc5c1d73f0"
             ]
         ]
     },
@@ -10742,5 +10770,23 @@
                 "0465dd94a2c2be29"
             ]
         ]
+    },
+    {
+        "id": "c09b72cc5c1d73f0",
+        "type": "debug",
+        "z": "38421258531f58b8",
+        "g": "772f6715c5060a61",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1680,
+        "y": 1860,
+        "wires": []
     }
 ]

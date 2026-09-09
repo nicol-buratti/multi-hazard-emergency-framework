@@ -8,7 +8,7 @@
     <bpmn:messageFlow id="Flow_0v9bkr8" sourceRef="Activity_1n9n9dl" targetRef="Activity_1m4lfju" />
     <bpmn:messageFlow id="Flow_1y4y3es" sourceRef="Activity_0m3m1yv" targetRef="Activity_0mktwid" />
     <bpmn:textAnnotation id="TextAnnotation_1di7pvl">
-      <bpmn:text>D: SignalledAreas P: Building</bpmn:text>
+      <bpmn:text>D: SignalledAreas P: FullBuilding</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_04nok61">
       <bpmn:text>D: GatheringPoints P: Building</bpmn:text>
@@ -91,7 +91,7 @@ P: SafeZones</bpmn:text>
         <zeebe:taskDefinition type="move-signalled-area" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;SignalledAreas&#34;" target="Destination" />
-          <zeebe:input source="=&#34;Building&#34;" target="Path" />
+          <zeebe:input source="=&#34;FullBuilding&#34;" target="Path" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1osji9s</bpmn:incoming>
@@ -586,7 +586,7 @@ P: SafeZones</bpmn:text>
         <di:waypoint x="610" y="1400" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_0g3yevr" bpmnElement="TextAnnotation_1di7pvl">
-        <dc:Bounds x="425" y="990" width="114" height="43" />
+        <dc:Bounds x="425" y="990" width="116.69197031039135" height="43" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_023dolv" bpmnElement="TextAnnotation_04nok61">
