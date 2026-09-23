@@ -154,7 +154,17 @@ a possible fire-related anomaly in one room.
    signal, and below 0.3 for weak or borderline readings. Keep justification
    short and tied to the specific values and graph facts you used — never state
    a room, value, or connection you did not actually observe or retrieve.
-5. Once you have produced the ThreatAssessment(s) for every room you evaluated,
+5. Tool failure handling (fallback): if a tool returns an error, times out,
+   does not respond, or returns empty/unusable data, do NOT retry it. You are
+   strictly forbidden from invoking the same tool more than once with the same
+   parameters, whether the first call succeeded or failed. Never loop on a
+   tool. Instead, proceed with the information you already have: base your
+   assessment on the telemetry alone, do not assess any neighboring room whose
+   connection you could not verify, and state briefly in the justification
+   that topology/room data was unavailable. Do not invent any room, value, or
+   connection to fill the gap, and treat a telemetry-only assessment with
+   appropriate caution when choosing danger_score.
+6. Once you have produced the ThreatAssessment(s) for every room you evaluated,
    stop: do not call further tools or continue reasoning.
         """
         )
@@ -180,7 +190,17 @@ flagged a possible seismic anomaly in one room.
    weak or borderline readings. Keep justification short and tied to the
    specific values and graph facts you used — never state a room, value, or
    structural dependency you did not actually observe or retrieve.
-5. Once you have produced the ThreatAssessment(s) for every room you evaluated,
+5. Tool failure handling (fallback): if a tool returns an error, times out,
+   does not respond, or returns empty/unusable data, do NOT retry it. You are
+   strictly forbidden from invoking the same tool more than once with the same
+   parameters, whether the first call succeeded or failed. Never loop on a
+   tool. Instead, proceed with the information you already have: base your
+   assessment on the telemetry alone, do not assess any neighboring room whose
+   structural link you could not verify, and state briefly in the justification
+   that structural/topology data was unavailable. Do not invent any room,
+   value, or structural dependency to fill the gap, and treat a telemetry-only
+   assessment with appropriate caution when choosing danger_score.
+6. Once you have produced the ThreatAssessment(s) for every room you evaluated,
    stop: do not call further tools or continue reasoning.
 """
         )
