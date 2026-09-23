@@ -43,11 +43,17 @@ async def get_memgraph_tools() -> List[BaseTool]:
         """
         cypher = f"""
         MATCH (n:Place)
-        WHERE n.department = '{department}' AND n.name = '{room}'
+        WHERE toLower(n.department) = toLower('{department}')
+        AND toLower(n.name) = toLower('{room}')
         RETURN n
         LIMIT 1
         """
-        return await query_tool.ainvoke({"query": cypher})
+        result = await query_tool.ainvoke({"query": cypher})
+        return (
+            result
+            if result
+            else f"No data found for room '{room}' in department '{department}'."
+        )
 
     @tool
     async def get_adjacent_rooms(
@@ -68,7 +74,8 @@ async def get_memgraph_tools() -> List[BaseTool]:
         """
         cypher = f"""
         MATCH (n:Place)
-        WHERE n.department = '{department}' AND n.name = '{room}'
+        WHERE toLower(n.department) = toLower('{department}')
+        AND toLower(n.name) = toLower('{room}')
 
         MATCH p = (n)-[:CONNECTED_TO*1..{depth}]-(target)
 
@@ -90,7 +97,12 @@ async def get_memgraph_tools() -> List[BaseTool]:
         ORDER BY data.depth ASC, n1 ASC, n2 ASC
         LIMIT {limit}
         """
-        return await query_tool.ainvoke({"query": cypher})
+        result = await query_tool.ainvoke({"query": cypher})
+        return (
+            result
+            if result
+            else f"No connected rooms found for '{room}' within {limit} results."
+        )
 
     @tool
     async def get_hvac_and_shaft_connections(room: str) -> str:

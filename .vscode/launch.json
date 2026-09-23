@@ -5,11 +5,61 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debugger Python: File corrente",
+            "name": "Debugger Python: File main",
             "type": "debugpy",
             "request": "launch",
-            "program": "${cwd}/main.py",
-            "console": "integratedTerminal"
+            "program": "${workspaceFolder}/worker-ai/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/worker-ai",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/worker-ai"
+            },
+        },
+        {
+            "name": "Python: Debug Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/worker-ai",
+        },
+        {
+            "name": "Python: Debug run_evaluation",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/worker-ai/evaluation/run_evaluation.py",
+            "args": [
+                "--n-per-class",
+                "15",
+                "--repeats",
+                "3"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/worker-ai"
+            },
+            "cwd": "${workspaceFolder}/worker-ai"
+        },
+        {
+            "name": "Python: Debug kpi_benchmark",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/worker-ai/evaluation/kpi_benchmark.py",
+            "args": [
+                "--n",
+                "5",
+                "--snapshots",
+                "5",
+                "--seed",
+                "42",
+                "--output",
+                "kpi_evaluation.csv"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/worker-ai"
+            },
+            "cwd": "${workspaceFolder}/worker-ai"
         }
     ]
 }

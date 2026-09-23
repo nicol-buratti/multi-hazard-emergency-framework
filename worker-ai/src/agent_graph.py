@@ -283,6 +283,22 @@ flagged a possible seismic anomaly in one room.
             logger.info("\n" + self.app.get_graph().draw_ascii())
 
     async def process_data(self, data: dict[str, Any]) -> list[dict[str, Any]]:
+        graph_result = await self.ainvoke(data)
+        raw_assessments: list[dict[str, Any]] = graph_result.get("assessments", [])
+
+        validated_assessments: list[dict[str, Any]] = []
+        for assessment_data in raw_assessments:
+            try:
+                assessment = ThreatAssessment(**assessment_data)
+                validated_assessments.append(assessment.model_dump())
+            except ValidationError as e:
+                logger.error(
+                    f"Validation failed for assessment data {assessment_data}: {e}"
+                )
+
+        return validated_assessments
+
+    async def ainvoke(self, data):
         if not self.app:
             await self.initialize_graph()
 
@@ -302,16 +318,4 @@ flagged a possible seismic anomaly in one room.
         graph_result: dict[str, Any] = await self.app.ainvoke(
             initial_state, config=config
         )
-        raw_assessments: list[dict[str, Any]] = graph_result.get("assessments", [])
-
-        validated_assessments: list[dict[str, Any]] = []
-        for assessment_data in raw_assessments:
-            try:
-                assessment = ThreatAssessment(**assessment_data)
-                validated_assessments.append(assessment.model_dump())
-            except ValidationError as e:
-                logger.error(
-                    f"Validation failed for assessment data {assessment_data}: {e}"
-                )
-
-        return validated_assessments
+        return graph_result
