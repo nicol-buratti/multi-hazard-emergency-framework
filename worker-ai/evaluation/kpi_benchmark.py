@@ -2,82 +2,82 @@
 kpi_benchmark.py
 =================
 
-Benchmark/collaudo KPI END-TO-END per HazardMapReduceManager, contro lo
-stack REALE: LLM vero (ChatOpenAI via `create_agent`), tool reali di
-`memgraph_custom_tools.get_memgraph_tools()`, e il vero server MCP
-Memgraph configurato in quella funzione. Nessun componente e' mockato:
-per lanciare lo script serve un server MCP Memgraph raggiungibile e le
-credenziali LLM reali (lette da `agent_graph.AppSettings`, tipicamente
-da .env), esattamente come per l'esecuzione normale del tuo agente.
+END-TO-END KPI benchmark/testing for HazardMapReduceManager against the
+REAL stack: a real LLM (ChatOpenAI via `create_agent`), real tools from
+`memgraph_custom_tools.get_memgraph_tools()`, and the real Memgraph MCP server
+configured in that function. No component is mocked: to run this script,
+you need a reachable Memgraph MCP server and real LLM credentials (read by
+`agent_graph.AppSettings`, typically from a .env file), exactly as in the
+normal execution of your agent.
 
-Punto d'ingresso testato: `HazardMapReduceManager.analyze_data(data)`.
-Se nel tuo progetto quel metodo si chiama ancora `process_data` (come nel
-file che mi hai condiviso inizialmente), lo script lo rileva da solo e
-usa quello come fallback — vedi `_resolve_entrypoint()`.
+Tested entry point: `HazardMapReduceManager.analyze_data(data)`.
+If that method is still called `process_data` in your project, the script
+will detect it automatically and use it as a fallback — see `_resolve_entrypoint()`.
 
-COSA VIENE MISURATO E COME (dato che qui non c'e' alcun doppio da cui
-leggere lo stato interno, ogni KPI e' osservato dall'esterno):
+WHAT IS MEASURED AND HOW (since there is no mock to read internal states from,
+every KPI is observed externally):
 
-  1. Latenza end-to-end: perf_counter() attorno alla chiamata reale.
-  2. Overhead tool: ogni tool restituito da get_memgraph_tools() viene
-     istrumentato (si avvolge il suo `.coroutine` reale) per sommare il
-     tempo speso nelle chiamate reali al server MCP/Memgraph.
-  3. Schema adherence: se la chiamata solleva una ValidationError
-     Pydantic (o un errore il cui messaggio la richiama), la run viene
-     marcata come non conforme allo schema al primo tentativo.
-  4. Routing accuracy: euristica sul `danger_type` restituito (dato che
-     con il grafo reale non intercettiamo l'edge routing interno):
-     "fire" -> ci si aspetta un danger_type in {fire, smoke, heat};
-     "earthquake" -> {earthquake}; "fire_earthquake" -> uno qualsiasi dei
-     due; "normal" -> nessuna assessment ad alto rischio.
-  5. Varianza del danger_score: calcolata a fine run (stdev) sui valori
-     realmente restituiti dall'LLM per ciascuno scenario.
-  6. Allucinazione topologica: PRIMA del loop, interroghiamo i tool
-     reali (get_room_data/get_adjacent_rooms) per ottenere la topologia
-     VERA della stanza di ogni scenario direttamente dal tuo grafo
-     Memgraph; a ogni run confrontiamo le stanze citate nella
-     justification con questa verita' di terra.
-  7. API drop rate: qui NON viene iniettato alcun guasto finto (avrebbe
-     poco senso contro un sistema reale) — viene semplicemente
-     classificato e contato ogni fallimento di rete/API realmente
-     osservato durante le run.
+  1. End-to-end latency: perf_counter() around the real call.
+  2. Tool overhead: each tool returned by get_memgraph_tools() is instrumented
+     (its real `.coroutine` is wrapped) to sum up the time spent in real
+     calls to the MCP/Memgraph server.
+  3. Schema adherence: if the call raises a Pydantic ValidationError (or an
+     error whose message refers to it), the run is marked as non-compliant
+     on the first attempt.
+  4. Routing accuracy: heuristics on the returned `danger_type` (since we
+     don't intercept the internal routing edges with the real graph):
+     "fire" -> expected danger_type in {fire, smoke, heat};
+     "earthquake" -> {earthquake}; "fire_earthquake" -> any of the two;
+     "normal" -> no high-risk assessment expected.
+  5. Danger_score variance: calculated at the end of the run (stdev) on the
+     values actually returned by the LLM for each scenario.
+  6. API drop rate: NO fake failures are injected here (it wouldn't make
+     sense against a real system) — any network/API failure genuinely observed
+     during the runs is simply classified and counted.
+  7. Tool call count: number of real tool invocations per run (plus the number
+     of distinct tools used) — same instrumentation as the overhead.
+  8. LLM calls and tokens: by hooking a callback directly to `manager.model`
+     (the only ChatOpenAI instance shared by Triage/Fire/Earthquake), every
+     real call to the model for the run is intercepted, even if the three
+     agents do not exchange messages with each other. If your `llm_base_url`
+     is a gateway/proxy that doesn't return `usage` in the response,
+     `llm_calls` will be > 0 but tokens will stay at 0 (the script will warn you).
+  9. Assessment count: how many ThreatAssessments each run produces — useful
+     for measuring how often the system propagates the evaluation to adjacent
+     rooms instead of just the primary one.
 
-DA CONFIGURARE PRIMA DELL'USO
+TO BE CONFIGURED BEFORE USE
 ------------------------------
-`SCENARIO_ROOMS` piu' sotto e `DEPARTMENT` usano segnaposto presi
-dall'esempio che mi hai mostrato ("departmenta"/"ab1" ecc.). Se il tuo
-department/room reale e' diverso, sostituiscili — altrimenti i tool reali
-restituiranno "nessun dato trovato" per ogni run.
+`SCENARIO_ROOMS` below and `DEPARTMENT` use placeholders. If your real
+department/room in the graph is different, replace them — otherwise, the real
+tools will return "no data found" for every run.
 
-INPUT DELL'AGENTE
+AGENT INPUT
 ------------------
-Formato REALE confermato via test manuale (non lo cambiamo, ci adeguiamo):
+REAL format confirmed via manual test (we don't change it, we adapt):
 
     {
         "room": "<department>:<room>",
         "sensor_data": [
             {"co2": ..., "temperature": ..., "humidity": ..., "tvoc": ...,
              "eco2": ..., "room": "<department>:<room>", "timestamp": "..."},
-            ...  # tipicamente 5, uno per ciascuno degli ultimi 5 minuti,
-                 # dal piu' vecchio al piu' recente
+            ...  # typically 5, one for each of the last 5 minutes,
+                 # from oldest to newest
         ],
     }
 
-Ogni elemento di `sensor_data` e' gia' il valore MASSIMO di quel minuto (se
-in un minuto arrivano temperature 20,20,21,23,21, l'oggetto di quel minuto
-porta solo 23). I sensori sismici (vibration_g/acceleration_g) non hanno
-ancora un sensore reale collegato: restano sintetici, aggiunti alle stesse
-letture. Le liste sono generate dinamicamente ad ogni run da una funzione
-per scenario (`SCENARIO_GENERATORS`): normal, fire, earthquake,
-fire_earthquake (evento combinato/improvviso tipo esplosione), cosi' ogni
-run e' un caso leggermente diverso invece di un payload statico ripetuto.
+Each element in `sensor_data` is already the MAXIMUM value of that minute.
+The seismic sensors (vibration_g/acceleration_g) don't have a real sensor
+connected yet: they remain synthetic, appended to the same readings.
+The lists are dynamically generated at each run by a per-scenario function
+(`SCENARIO_GENERATORS`), so each run is a slightly different test case.
 
-USO
+USAGE
 ---
-    python kpi_benchmark.py --n 5 --snapshots 5 --output kpi_evaluation.csv
+    uv run python -m evaluation.kpi_benchmark --n 5 --snapshots 5 --seed 42 --output kpi_evaluation.csv
 
-Consiglio: parti con --n basso (3-5) per un primo smoke test reale,
-dato che ogni run e' una vera chiamata LLM + vera query al grafo.
+Tip: start with a low --n (3-5) for an initial real smoke test, since each
+run implies a real LLM call + real graph query.
 """
 
 from __future__ import annotations
@@ -96,6 +96,7 @@ from pathlib import Path
 from typing import Any, Awaitable, Callable
 
 from pydantic import ValidationError
+from langchain_core.callbacks import AsyncCallbackHandler
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -103,28 +104,25 @@ from src.agent_graph import HazardMapReduceManager  # noqa: E402
 from src.memgraph_custom_tools import get_memgraph_tools  # noqa: E402
 
 # ----------------------------------------------------------------------------
-# 1. GENERAZIONE DINAMICA DELLE FINESTRE DI TELEMETRIA
+# 1. DYNAMIC GENERATION OF TELEMETRY WINDOWS
 # ----------------------------------------------------------------------------
-# Formato REALE confermato via test manuale: `ainvoke`/`analyze_data` si
-# aspetta un dict {"room": "<department>:<room>", "sensor_data": [...]}, dove
-# ogni elemento di sensor_data e' la lettura GIA' aggregata (max) di un
-# minuto: {"co2", "temperature", "humidity", "tvoc", "eco2", "room",
-# "timestamp"}. I campi sismici (vibration_g/acceleration_g) non hanno ancora
-# un sensore reale collegato: restano sintetici come prima, aggiunti alle
-# stesse letture.
+# REAL format confirmed via manual testing: `ainvoke`/`analyze_data` expects
+# a dict {"room": "<department>:<room>", "sensor_data": [...]}, where each
+# element of sensor_data is the ALREADY aggregated (max) reading of a minute.
+# The seismic fields do not have a real sensor connected yet: they remain
+# synthetic as before.
 #
-# Ogni scenario e' una funzione che restituisce un payload nuovo ad ogni
-# chiamata (con rumore/trend casuali via `rng`), cosi' ogni run e' un caso
-# di test leggermente diverso invece di un payload statico ripetuto.
+# Each scenario is a function that returns a new payload upon each call (with
+# random noise/trends via `rng`), so every run is slightly different.
 
-DEPARTMENT = "departmenta"  # <-- DA CONFIGURARE: reparto reale nel grafo
+DEPARTMENT = "departmenta"
 
-# Stanza usata per ciascuno scenario (deve esistere davvero nel grafo).
+# Room used for each scenario (must exist in the graph).
 SCENARIO_ROOMS: dict[str, str] = {
-    "normal": "ab1",  # <-- DA CONFIGURARE
-    "fire": "ab2",  # <-- DA CONFIGURARE
-    "earthquake": "ab3",  # <-- DA CONFIGURARE
-    "fire_earthquake": "ab2",  # <-- DA CONFIGURARE (es. esplosione)
+    "normal": "ab1",
+    "fire": "ab2",
+    "earthquake": "ab3",
+    "fire_earthquake": "ab2",  # (e.g. explosion)
 }
 
 SCENARIO_EXPECTED_DANGER_TYPES: dict[str, set[str]] = {
@@ -148,8 +146,7 @@ def _trend_series(
     hi: float,
     noise_frac: float = 0.05,
 ) -> list[float]:
-    """Serie di n valori con andamento lineare start->end (evento che
-    peggiora/migliora gradualmente minuto per minuto) piu' rumore."""
+    """Series of n values with linear trend start->end (event gradually worsening/improving) plus noise."""
     span = abs(end - start)
     values = []
     for i in range(n):
@@ -170,8 +167,7 @@ def _step_series(
     hi: float,
     noise_frac: float = 0.05,
 ) -> list[float]:
-    """Serie con un salto brusco al minuto `onset_index` (evento improvviso,
-    es. esplosione) invece di un'escalation graduale."""
+    """Series with a sudden jump at minute `onset_index` (sudden event, e.g. explosion)."""
     span = abs(spike - baseline)
     values = []
     for i in range(n):
@@ -207,9 +203,8 @@ def _assemble_window(
     vibration_g: list[float],
     acceleration_g: list[float],
 ) -> dict[str, Any]:
-    """Costruisce il payload REALE: {"room": "<department>:<room>",
-    "sensor_data": [...]}, dal minuto piu' vecchio (indice 0) al piu'
-    recente (indice n-1, ultimo elemento = adesso)."""
+    """Builds the REAL payload: {"room": "<department>:<room>", "sensor_data": [...]},
+    from oldest minute (index 0) to newest (index n-1)."""
     combined_room = f"{department}:{room}"
     now = datetime.now()
     sensor_data = [
@@ -251,8 +246,7 @@ def generate_normal_window(
 def generate_fire_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    # Escalation graduale: un incendio che si sviluppa minuto dopo minuto
-    # (calore/CO2/VOC salgono, l'umidita' scende per il calore secco).
+    # Gradual escalation: a fire developing minute by minute.
     return _assemble_window(
         room,
         department,
@@ -270,7 +264,7 @@ def generate_fire_window(
 def generate_earthquake_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    # Escalation graduale della sismicita'; aria/gas restano al baseline.
+    # Gradual seismic escalation; air/gas remain at baseline.
     return _assemble_window(
         room,
         department,
@@ -288,8 +282,7 @@ def generate_earthquake_window(
 def generate_fire_and_earthquake_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    # Evento improvviso e simultaneo su tutti i sensori (es. esplosione):
-    # baseline nei primi minuti, poi salto netto su aria/gas E vibrazione.
+    # Sudden and simultaneous event across all sensors (e.g. explosion).
     onset = max(1, n // 2)
     return _assemble_window(
         room,
@@ -314,9 +307,7 @@ SCENARIO_GENERATORS: dict[
     "fire_earthquake": generate_fire_and_earthquake_window,
 }
 
-# Riconosce sia id "combinati" tipo "departmenta:ab1" sia id "nudi" tipo
-# "ab1"/"R101" citati nella justification (case-insensitive: i nomi reali
-# osservati sono minuscoli, es. "ab1", non "R101").
+# Recognizes combined IDs like "departmenta:ab1" and simple IDs like "ab1"/"R101".
 ROOM_ID_PATTERN = re.compile(r"\b([A-Za-z][\w-]*:[\w-]+|[A-Za-z]{1,4}\d{1,4})\b")
 
 CSV_COLUMNS = [
@@ -324,72 +315,89 @@ CSV_COLUMNS = [
     "scenario_type",
     "latency_ms",
     "tool_overhead_ms",
+    "tool_call_count",
+    "distinct_tools_used",
+    "llm_calls",
+    "prompt_tokens",
+    "completion_tokens",
+    "total_tokens",
+    "assessment_count",
     "schema_adherence",
     "routing_correct",
     "danger_score",
-    "hallucination_detected",
     "api_failed",
 ]
 
 # ----------------------------------------------------------------------------
-# 2. STRUMENTAZIONE DEI TOOL REALI (overhead) — nessun doppio, solo un
-#    wrapper che cronometra la coroutine reale di ciascun tool.
+# 2. REAL TOOLS INSTRUMENTATION (overhead + call counting)
 # ----------------------------------------------------------------------------
 
-_tool_overhead_ms: ContextVar[list[float]] = ContextVar("tool_overhead_ms")
+# Each element: (tool_name, duration_ms) — one entry per real invocation.
+_tool_calls: ContextVar[list[tuple[str, float]]] = ContextVar("tool_calls")
 
 
 def instrument_tools(tools: list[Any]) -> list[Any]:
-    """Avvolge il `.coroutine` reale di ogni tool per sommarne la durata
-    nel contatore della run corrente (KPI 2), senza cambiarne il comportamento.
-    """
+    """Wraps the real `.coroutine` of each tool to sum its duration and count calls."""
     for t in tools:
         if getattr(t, "coroutine", None) is None:
-            continue  # tool solo sincrono: non previsto qui, si ignora
+            continue  # synchronous-only tool: ignored here
         original: Callable[..., Awaitable[Any]] = t.coroutine
+        tool_name = t.name
 
-        async def wrapped(*args: Any, _original=original, **kwargs: Any) -> Any:
+        async def wrapped(
+            *args: Any, _original=original, _name=tool_name, **kwargs: Any
+        ) -> Any:
             t0 = time.perf_counter()
             try:
                 return await _original(*args, **kwargs)
             finally:
-                bucket = _tool_overhead_ms.get(None)
+                bucket = _tool_calls.get(None)
                 if bucket is not None:
-                    bucket.append((time.perf_counter() - t0) * 1000)
+                    bucket.append((_name, (time.perf_counter() - t0) * 1000))
 
         t.coroutine = wrapped
     return tools
 
 
-async def fetch_ground_truth_room_ids(
-    tools_by_name: dict[str, Any], department: str, room: str
-) -> set[str]:
-    """Interroga i tool REALI per ottenere la topologia vera della stanza,
-    da usare come riferimento anti-allucinazione (KPI 6)."""
-    known: set[str] = {room}
-    try:
-        room_data_tool = tools_by_name["get_room_data"]
-        adjacent_tool = tools_by_name["get_adjacent_rooms"]
-        room_raw = await room_data_tool.ainvoke(
-            {"department": department, "room": room}
-        )
-        adjacent_raw = await adjacent_tool.ainvoke(
-            {"department": department, "room": room, "depth": 2, "limit": 50}
-        )
-        known |= set(ROOM_ID_PATTERN.findall(str(room_raw)))
-        known |= set(ROOM_ID_PATTERN.findall(str(adjacent_raw)))
-    except Exception:
-        # Se il fetch della verita' di terra fallisce (es. stanza non
-        # configurata), il rilevamento di allucinazioni per questo
-        # scenario sara' meno affidabile: viene segnalato a console.
-        print(
-            f"[WARN] impossibile recuperare la topologia reale per '{room}' in '{department}'"
-        )
-    return known
+class TokenUsageCallback(AsyncCallbackHandler):
+    """Callback hooked directly to `manager.model` (the single ChatOpenAI instance).
+    Intercepts EVERY real LLM call of the current run."""
+
+    def __init__(self) -> None:
+        self.llm_calls = 0
+        self.prompt_tokens = 0
+        self.completion_tokens = 0
+        self.total_tokens = 0
+
+    async def on_llm_end(self, response: Any, **kwargs: Any) -> None:
+        self.llm_calls += 1
+        usage: dict[str, Any] | None = None
+
+        llm_output = getattr(response, "llm_output", None) or {}
+        usage = llm_output.get("token_usage") or llm_output.get("usage")
+
+        if not usage:
+            # Fallback: AIMessage.usage_metadata (newer langchain-core format).
+            try:
+                message = response.generations[0][0].message
+                usage_meta = getattr(message, "usage_metadata", None)
+                if usage_meta:
+                    usage = {
+                        "prompt_tokens": usage_meta.get("input_tokens", 0),
+                        "completion_tokens": usage_meta.get("output_tokens", 0),
+                        "total_tokens": usage_meta.get("total_tokens", 0),
+                    }
+            except (IndexError, AttributeError, TypeError):
+                usage = None
+
+        if usage:
+            self.prompt_tokens += usage.get("prompt_tokens", 0) or 0
+            self.completion_tokens += usage.get("completion_tokens", 0) or 0
+            self.total_tokens += usage.get("total_tokens", 0) or 0
 
 
 # ----------------------------------------------------------------------------
-# 3. ENTRYPOINT DEL MANAGER — usa analyze_data, con fallback a process_data
+# 3. MANAGER ENTRYPOINT — uses analyze_data, with fallback to process_data
 # ----------------------------------------------------------------------------
 
 
@@ -399,24 +407,22 @@ def _resolve_entrypoint(
     entrypoint = getattr(manager, "analyze_data", None)
     if entrypoint is not None:
         return entrypoint
-    # Il file condiviso inizialmente espone questo metodo come `process_data`.
     entrypoint = getattr(manager, "process_data", None)
     if entrypoint is not None:
-        print("[INFO] 'analyze_data' non trovato: uso 'process_data' come entrypoint.")
+        print("[INFO] 'analyze_data' not found: using 'process_data' as entrypoint.")
         return entrypoint
     raise AttributeError(
-        "HazardMapReduceManager non espone ne' 'analyze_data' ne' 'process_data'."
+        "HazardMapReduceManager exposes neither 'analyze_data' nor 'process_data'."
     )
 
 
 # ----------------------------------------------------------------------------
-# 4. CLASSIFICAZIONE DEGLI ERRORI REALI (KPI 3 / KPI 7)
+# 4. REAL ERROR CLASSIFICATION (KPI 3 / KPI 6)
 # ----------------------------------------------------------------------------
 
 
 def classify_exception(exc: Exception) -> tuple[bool, bool]:
-    """Ritorna (schema_adherence_ok, api_failed) a partire da un'eccezione
-    realmente sollevata dallo stack (LLM, tool, rete)."""
+    """Returns (schema_adherence_ok, api_failed) starting from a real exception."""
     if isinstance(exc, ValidationError):
         return False, False
     message = str(exc).lower()
@@ -435,50 +441,68 @@ def classify_exception(exc: Exception) -> tuple[bool, bool]:
         )
     ):
         return True, True
-    # Fallimento non classificato: lo trattiamo come un drop generico,
-    # cosi' compare comunque nel tasso di fallimento invece di sparire.
+    # Unclassified failure: treat it as a generic drop.
     return True, True
 
 
 # ----------------------------------------------------------------------------
-# 5. ESECUZIONE DI UNA SINGOLA RUN REALE
+# 5. EXECUTION OF A SINGLE REAL RUN
 # ----------------------------------------------------------------------------
 
 
 async def run_single(
     entrypoint: Callable[[dict[str, Any]], Awaitable[list[dict[str, Any]]]],
+    model: Any,
     scenario_key: str,
     run_id: int,
     room: str,
     rng: random.Random,
     n_snapshots: int,
-    known_room_ids: set[str],
 ) -> dict[str, Any]:
-    token = _tool_overhead_ms.set([])
+    token = _tool_calls.set([])
+    token_handler = TokenUsageCallback()
+    model.callbacks = [token_handler]  # hooked to the single shared ChatOpenAI instance
 
     row: dict[str, Any] = {
         "run_id": run_id,
         "scenario_type": scenario_key,
         "latency_ms": None,
         "tool_overhead_ms": 0.0,
+        "tool_call_count": 0,
+        "distinct_tools_used": 0,
+        "llm_calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "assessment_count": 0,
         "schema_adherence": True,
         "routing_correct": False,
         "danger_score": None,
-        "hallucination_detected": False,
         "api_failed": False,
     }
 
-    # {"room": "<department>:<room>", "sensor_data": [...]}, generato ad hoc per questa run.
+    # {"room": "<department>:<room>", "sensor_data": [...]}, generated ad-hoc for this run.
     window = SCENARIO_GENERATORS[scenario_key](rng, room, DEPARTMENT, n_snapshots)
 
     t0 = time.perf_counter()
     try:
         assessments = await entrypoint(window)
         row["latency_ms"] = round((time.perf_counter() - t0) * 1000, 2)
-        row["tool_overhead_ms"] = round(sum(_tool_overhead_ms.get([])), 2)
+
+        calls = _tool_calls.get([])
+        row["tool_overhead_ms"] = round(sum(ms for _, ms in calls), 2)
+        row["tool_call_count"] = len(calls)
+        row["distinct_tools_used"] = len({name for name, _ in calls})
+
+        row["llm_calls"] = token_handler.llm_calls
+        row["prompt_tokens"] = token_handler.prompt_tokens
+        row["completion_tokens"] = token_handler.completion_tokens
+        row["total_tokens"] = token_handler.total_tokens
+
+        row["assessment_count"] = len(assessments)
         row["danger_score"] = assessments[0]["danger_score"] if assessments else None
 
-        # --- KPI 4: routing accuracy (euristica sul danger_type osservato) ---
+        # --- KPI 4: routing accuracy (observed danger_type heuristic) ---
         expected_types = SCENARIO_EXPECTED_DANGER_TYPES[scenario_key]
         observed_types = {a.get("danger_type") for a in assessments}
         if expected_types == {"none"}:
@@ -492,33 +516,35 @@ async def run_single(
         else:
             row["routing_correct"] = bool(observed_types & expected_types)
 
-        # --- KPI 6: allucinazione topologica contro la verita' di terra reale ---
-        justification_text = " ".join(a.get("justification", "") for a in assessments)
-        mentioned = set(ROOM_ID_PATTERN.findall(justification_text))
-        row["hallucination_detected"] = bool(mentioned - known_room_ids)
-
     except Exception as exc:
         row["latency_ms"] = round((time.perf_counter() - t0) * 1000, 2)
-        row["tool_overhead_ms"] = round(sum(_tool_overhead_ms.get([])), 2)
+        calls = _tool_calls.get([])
+        row["tool_overhead_ms"] = round(sum(ms for _, ms in calls), 2)
+        row["tool_call_count"] = len(calls)
+        row["distinct_tools_used"] = len({name for name, _ in calls})
+        row["llm_calls"] = token_handler.llm_calls
+        row["prompt_tokens"] = token_handler.prompt_tokens
+        row["completion_tokens"] = token_handler.completion_tokens
+        row["total_tokens"] = token_handler.total_tokens
         schema_ok, api_failed = classify_exception(exc)
         row["schema_adherence"] = schema_ok
         row["api_failed"] = api_failed
         print(
-            f"[run {run_id}] {scenario_key}: eccezione reale -> {type(exc).__name__}: {exc}"
+            f"[run {run_id}] {scenario_key}: real exception -> {type(exc).__name__}: {exc}"
         )
     finally:
-        _tool_overhead_ms.reset(token)
+        _tool_calls.reset(token)
 
     return row
 
 
 # ----------------------------------------------------------------------------
-# 6. HARNESS PRINCIPALE
+# 6. MAIN HARNESS
 # ----------------------------------------------------------------------------
 
 
 def print_summary(rows: list[dict[str, Any]]) -> None:
-    print("\n=== Riepilogo KPI per scenario (stack reale) ===")
+    print("\n=== KPI Summary by Scenario (real stack) ===")
     for scenario_key in SCENARIO_GENERATORS:
         subset = [r for r in rows if r["scenario_type"] == scenario_key]
         if not subset:
@@ -526,65 +552,71 @@ def print_summary(rows: list[dict[str, Any]]) -> None:
         n = len(subset)
         latencies = [r["latency_ms"] for r in subset if r["latency_ms"] is not None]
         overheads = [r["tool_overhead_ms"] for r in subset]
+        tool_calls = [r["tool_call_count"] for r in subset]
+        llm_calls = [r["llm_calls"] for r in subset]
+        total_tokens = [r["total_tokens"] for r in subset]
+        assessment_counts = [r["assessment_count"] for r in subset]
         scores = [r["danger_score"] for r in subset if r["danger_score"] is not None]
         schema_rate = sum(r["schema_adherence"] for r in subset) / n
         routing_rate = sum(r["routing_correct"] for r in subset) / n
-        halluc_rate = sum(r["hallucination_detected"] for r in subset) / n
         api_fail_rate = sum(r["api_failed"] for r in subset) / n
         score_stdev = statistics.pstdev(scores) if len(scores) >= 1 else float("nan")
 
         print(f"\n--- Scenario: {scenario_key} (n={n}) ---")
         print(
-            f"  Latenza media:            {statistics.mean(latencies):.1f} ms"
+            f"  Average latency:          {statistics.mean(latencies):.1f} ms"
             if latencies
-            else "  Latenza media:            n/a"
+            else "  Average latency:          n/a"
         )
-        print(f"  Overhead tool medio:      {statistics.mean(overheads):.1f} ms")
+        print(f"  Average tool overhead:    {statistics.mean(overheads):.1f} ms")
+        print(f"  Average tool calls:       {statistics.mean(tool_calls):.1f}")
+        print(f"  Average LLM calls:        {statistics.mean(llm_calls):.1f}")
+        print(
+            f"  Average total tokens:     {statistics.mean(total_tokens):.1f}"
+            + (
+                "  [WARNING: always 0 -> the LLM endpoint likely does not expose usage]"
+                if sum(total_tokens) == 0 and sum(llm_calls) > 0
+                else ""
+            )
+        )
+        print(f"  Average assessments/run:  {statistics.mean(assessment_counts):.2f}")
         print(f"  Schema adherence rate:    {schema_rate:.1%}")
         print(f"  Routing accuracy:         {routing_rate:.1%}")
         print(f"  Danger score stdev:       {score_stdev:.4f}")
-        print(f"  Hallucination rate:       {halluc_rate:.1%}")
-        print(f"  API drop rate osservato:  {api_fail_rate:.1%}")
+        print(f"  Observed API drop rate:   {api_fail_rate:.1%}")
 
 
 async def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Benchmark KPI end-to-end (stack reale) per HazardMapReduceManager"
+        description="END-TO-END KPI benchmark (real stack) for HazardMapReduceManager"
     )
     parser.add_argument(
         "--n",
         type=int,
         default=5,
-        help="Numero di run per scenario (chiamate LLM reali)",
+        help="Number of runs per scenario (real LLM calls)",
     )
     parser.add_argument(
         "--snapshots",
         type=int,
         default=5,
-        help="Oggetti per finestra (minuti aggregati) inviati all'agente",
+        help="Objects per window (aggregated minutes) sent to the agent",
     )
     parser.add_argument(
         "--seed",
         type=int,
         default=None,
-        help="Seed opzionale per riprodurre le stesse finestre generate",
+        help="Optional seed to reproduce the generated windows",
     )
     parser.add_argument("--output", type=str, default="kpi_evaluation.csv")
     args = parser.parse_args()
     rng = random.Random(args.seed)
 
     manager = HazardMapReduceManager()
-    tools = await get_memgraph_tools()  # connessione REALE al server MCP Memgraph
+    tools = await get_memgraph_tools()  # REAL connection to Memgraph MCP server
     tools = instrument_tools(tools)
     await manager.initialize_graph(tools=tools)
     entrypoint = _resolve_entrypoint(manager)
-
-    tools_by_name = {t.name: t for t in tools}
-    known_room_ids: dict[str, set[str]] = {}
-    for scenario_key, room in SCENARIO_ROOMS.items():
-        known_room_ids[scenario_key] = await fetch_ground_truth_room_ids(
-            tools_by_name, DEPARTMENT, room
-        )
 
     rows: list[dict[str, Any]] = []
     run_id = 0
@@ -598,22 +630,24 @@ async def main() -> None:
             for _ in range(args.n):
                 row = await run_single(
                     entrypoint,
+                    manager.model,
                     scenario_key,
                     run_id,
                     room,
                     rng,
                     args.snapshots,
-                    known_room_ids[scenario_key],
                 )
                 rows.append(row)
                 writer.writerow(row)
-                f.flush()  # scritta subito su disco, non bufferizzata fino alla fine
+                f.flush()  # written immediately to disk, not buffered until the end
                 print(
-                    f"[run {run_id}] {scenario_key}: scritta su CSV (latenza {row['latency_ms']} ms)"
+                    f"[run {run_id}] {scenario_key}: written to CSV "
+                    f"(latency {row['latency_ms']} ms, {row['llm_calls']} LLM calls, "
+                    f"{row['tool_call_count']} tool calls, {row['total_tokens']} tokens)"
                 )
                 run_id += 1
 
-    print(f"\nScritte {len(rows)} run in {output_path.resolve()}")
+    print(f"\nWritten {len(rows)} runs to {output_path.resolve()}")
     print_summary(rows)
 
 
