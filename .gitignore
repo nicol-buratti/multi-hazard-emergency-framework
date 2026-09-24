@@ -25,3 +25,7 @@ node-red/node_red_data/*
 node-red/node_red_data/flows_cred.json
 
 .pytest_cache
+
+worker-ai/tables/*
+*.csv
+*.tex

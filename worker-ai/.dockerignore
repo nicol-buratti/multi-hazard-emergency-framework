@@ -6,3 +6,5 @@ __pycache__
 .pytest_cache
 evaluation
 *.csv
+worker-ai/tables/*
+*.tex
