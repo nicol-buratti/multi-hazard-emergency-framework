@@ -61,16 +61,22 @@ REAL format confirmed via manual test (we don't change it, we adapt):
         "sensor_data": [
             {"co2": ..., "temperature": ..., "humidity": ..., "tvoc": ...,
              "eco2": ..., "room": "<department>:<room>", "timestamp": "..."},
-            ...  # typically 5, one for each of the last 5 minutes,
-                 # from oldest to newest
+            {"vibration_g": ..., "acceleration_g": ..., "room": "<department>:<room>",
+             "timestamp": "..."},
+            ...
         ],
     }
 
-Each element in `sensor_data` is already the MAXIMUM value of that minute.
-The seismic sensors (vibration_g/acceleration_g) don't have a real sensor
-connected yet: they remain synthetic, appended to the same readings.
-The lists are dynamically generated at each run by a per-scenario function
-(`SCENARIO_GENERATORS`), so each run is a slightly different test case.
+`sensor_data` is a HETEROGENEOUS list: environmental readings (co2/temperature/
+humidity/tvoc/eco2) are aggregated per minute (each element already the MAXIMUM
+value of that minute), while seismic readings (vibration_g/acceleration_g) --
+still synthetic, no real sensor connected yet -- are aggregated on a shorter
+window (several samples per minute). The two series are generated independently
+and then merged/sorted by timestamp into a single list, so each element carries
+only the fields of its own sensor type instead of one row per minute with every
+field always present. The lists are dynamically generated at each run by a
+per-scenario function (`SCENARIO_GENERATORS`), so each run is a slightly
+different test case.
 
 USAGE
 ---
@@ -177,6 +183,34 @@ def _step_series(
     return values
 
 
+def _pulse_series(
+    rng: random.Random,
+    baseline: float,
+    spike: float,
+    n: int,
+    onset_index: int,
+    lo: float,
+    hi: float,
+    noise_frac: float = 0.05,
+) -> list[float]:
+    """Genera un picco sismico isolato che decade rapidamente a livelli di assestamento."""
+    span = abs(spike - baseline)
+    values = []
+    for i in range(n):
+        if i < onset_index:
+            base = baseline
+        elif i == onset_index:
+            base = spike
+        else:
+            # Decadimento esponenziale dell'onda sismica nei minuti successivi
+            decay_factor = 0.15 ** (i - onset_index)
+            base = baseline + (spike - baseline) * decay_factor
+
+        noisy = base + rng.gauss(0, span * noise_frac + 1e-6)
+        values.append(round(_clamp(noisy, lo, hi), 3))
+    return values
+
+
 def _flat_series(
     rng: random.Random,
     level: float,
@@ -191,10 +225,19 @@ def _flat_series(
     ]
 
 
-def _assemble_window(
+# Rapporto tra la granularità di aggregazione sismica e quella ambientale: i
+# sensori sismici campionano più spesso (finestra più breve) di quelli
+# ambientali, quindi per ogni snapshot ambientale ci sono SEISMIC_TO_ENV_RATIO
+# snapshot sismici che coprono lo stesso intervallo di tempo reale.
+SEISMIC_TO_ENV_RATIO = 4
+ENV_INTERVAL_SECONDS = 60  # ambientali: 1 snapshot aggregato al minuto
+SEISMIC_INTERVAL_SECONDS = ENV_INTERVAL_SECONDS // SEISMIC_TO_ENV_RATIO  # es. 15s
+
+
+def _assemble_heterogeneous_window(
     room: str,
     department: str,
-    n: int,
+    n_env: int,
     co2: list[float],
     temperature: list[float],
     humidity: list[float],
@@ -203,33 +246,62 @@ def _assemble_window(
     vibration_g: list[float],
     acceleration_g: list[float],
 ) -> dict[str, Any]:
-    """Builds the REAL payload: {"room": "<department>:<room>", "sensor_data": [...]},
-    from oldest minute (index 0) to newest (index n-1)."""
+    """Builds the REAL payload with a HETEROGENEOUS `sensor_data` list.
+
+    Environmental snapshots (co2/temperature/humidity/tvoc/eco2), aggregated per
+    minute, and seismic snapshots (vibration_g/acceleration_g), aggregated on a
+    shorter window (SEISMIC_INTERVAL_SECONDS), are generated as two independent
+    series and then merged/sorted by timestamp into a single list. Each element
+    only carries the fields of its own sensor type, e.g.:
+
+        [{"co2": ..., "temperature": ...}, {"vibration_g": ..., "acceleration_g": ...},
+         {"vibration_g": ..., "acceleration_g": ...}, {"co2": ..., "temperature": ...}, ...]
+
+    instead of one row per minute with every field always present.
+    """
     combined_room = f"{department}:{room}"
     now = datetime.now()
-    sensor_data = [
+    total_seconds = n_env * ENV_INTERVAL_SECONDS
+    n_seismic = len(vibration_g)
+
+    env_snapshots = [
         {
             "co2": round(co2[i]),
             "temperature": temperature[i],
             "humidity": humidity[i],
             "tvoc": round(tvoc[i]),
             "eco2": round(eco2[i]),
+            "room": combined_room,
+            "timestamp": (
+                now - timedelta(seconds=total_seconds - (i + 1) * ENV_INTERVAL_SECONDS)
+            ).strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        for i in range(n_env)
+    ]
+    seismic_snapshots = [
+        {
             "vibration_g": vibration_g[i],
             "acceleration_g": acceleration_g[i],
             "room": combined_room,
-            "timestamp": (now - timedelta(minutes=(n - 1 - i))).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
+            "timestamp": (
+                now
+                - timedelta(seconds=total_seconds - (i + 1) * SEISMIC_INTERVAL_SECONDS)
+            ).strftime("%Y-%m-%d %H:%M:%S"),
         }
-        for i in range(n)
+        for i in range(n_seismic)
     ]
+
+    sensor_data = sorted(
+        env_snapshots + seismic_snapshots, key=lambda row: row["timestamp"]
+    )
     return {"room": combined_room, "sensor_data": sensor_data}
 
 
 def generate_normal_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    return _assemble_window(
+    n_seismic = n * SEISMIC_TO_ENV_RATIO
+    return _assemble_heterogeneous_window(
         room,
         department,
         n,
@@ -238,16 +310,19 @@ def generate_normal_window(
         humidity=_flat_series(rng, 55.0, n, 40, 65),
         tvoc=_flat_series(rng, 80, n, 0, 250),
         eco2=_flat_series(rng, 450, n, 400, 600),
-        vibration_g=_flat_series(rng, 0.01, n, 0.0, 0.03),
-        acceleration_g=_flat_series(rng, 0.02, n, 0.0, 0.05),
+        vibration_g=_flat_series(rng, 0.01, n_seismic, 0.0, 0.03),
+        acceleration_g=_flat_series(rng, 0.02, n_seismic, 0.0, 0.05),
     )
 
 
 def generate_fire_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    # Gradual escalation: a fire developing minute by minute.
-    return _assemble_window(
+    # Gradual escalation: a fire developing minute by minute. Il canale sismico
+    # resta a baseline (nessun evento sismico), campionato sulla propria
+    # cadenza, più breve.
+    n_seismic = n * SEISMIC_TO_ENV_RATIO
+    return _assemble_heterogeneous_window(
         room,
         department,
         n,
@@ -256,16 +331,18 @@ def generate_fire_window(
         humidity=_trend_series(rng, 55.0, 15.0, n, 0, 100),
         tvoc=_trend_series(rng, 300, 59000, n, 0, 60000),
         eco2=_trend_series(rng, 600, 59000, n, 400, 60000),
-        vibration_g=_flat_series(rng, 0.01, n, 0.0, 0.03),
-        acceleration_g=_flat_series(rng, 0.02, n, 0.0, 0.05),
+        vibration_g=_flat_series(rng, 0.01, n_seismic, 0.0, 0.03),
+        acceleration_g=_flat_series(rng, 0.02, n_seismic, 0.0, 0.05),
     )
 
 
 def generate_earthquake_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    # Gradual seismic escalation; air/gas remain at baseline.
-    return _assemble_window(
+    # Il canale ambientale resta a baseline (aggregazione al minuto); la
+    # escalation sismica viene generata sulla propria cadenza, più granulare.
+    n_seismic = n * SEISMIC_TO_ENV_RATIO
+    return _assemble_heterogeneous_window(
         room,
         department,
         n,
@@ -274,27 +351,36 @@ def generate_earthquake_window(
         humidity=_flat_series(rng, 55.0, n, 40, 65),
         tvoc=_flat_series(rng, 80, n, 0, 250),
         eco2=_flat_series(rng, 450, n, 400, 600),
-        vibration_g=_trend_series(rng, 0.05, 0.55, n, 0.0, 2.0),
-        acceleration_g=_trend_series(rng, 0.05, 0.60, n, 0.0, 2.0),
+        vibration_g=_trend_series(rng, 0.05, 0.55, n_seismic, 0.0, 2.0),
+        acceleration_g=_trend_series(rng, 0.05, 0.60, n_seismic, 0.0, 2.0),
     )
 
 
 def generate_fire_and_earthquake_window(
     rng: random.Random, room: str, department: str, n: int = 5
 ) -> dict[str, Any]:
-    # Sudden and simultaneous event across all sensors (e.g. explosion).
-    onset = max(1, n // 2)
-    return _assemble_window(
+    n_seismic = n * SEISMIC_TO_ENV_RATIO
+    onset_env = max(1, n // 2)
+    # Converte l'onset ambientale (indice al minuto) nell'indice equivalente
+    # sulla cadenza sismica (più breve), cosi' i due eventi partono allo
+    # stesso istante reale.
+    onset_seismic = max(1, round(onset_env * SEISMIC_TO_ENV_RATIO))
+    return _assemble_heterogeneous_window(
         room,
         department,
         n,
-        co2=_step_series(rng, 420, 2600, n, onset, 380, 5000),
-        temperature=_step_series(rng, 21.0, 95.0, n, onset, 18, 300),
-        humidity=_step_series(rng, 55.0, 10.0, n, onset, 0, 100),
-        tvoc=_step_series(rng, 80, 59500, n, onset, 0, 60000),
-        eco2=_step_series(rng, 450, 59500, n, onset, 400, 60000),
-        vibration_g=_step_series(rng, 0.01, 0.70, n, onset, 0.0, 2.0),
-        acceleration_g=_step_series(rng, 0.02, 0.75, n, onset, 0.0, 2.0),
+        # Dati ambientali (incendio) mantengono l'andamento a gradino
+        co2=_step_series(rng, 420, 2600, n, onset_env, 380, 5000),
+        temperature=_step_series(rng, 21.0, 95.0, n, onset_env, 18, 300),
+        humidity=_step_series(rng, 55.0, 10.0, n, onset_env, 0, 100),
+        tvoc=_step_series(rng, 80, 59500, n, onset_env, 0, 60000),
+        eco2=_step_series(rng, 450, 59500, n, onset_env, 400, 60000),
+        # Dati strutturali (terremoto/esplosione) usano l'impulso, sulla
+        # propria cadenza di aggregazione piu' breve
+        vibration_g=_pulse_series(rng, 0.01, 0.70, n_seismic, onset_seismic, 0.0, 2.0),
+        acceleration_g=_pulse_series(
+            rng, 0.02, 0.75, n_seismic, onset_seismic, 0.0, 2.0
+        ),
     )
 
 
